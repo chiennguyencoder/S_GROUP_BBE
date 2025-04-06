@@ -4,7 +4,7 @@
   "description": "I learn basic backend",
   "license": "ISC",
   "author": "chiennguyencoder",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "babel ./src --out-dir ./build",

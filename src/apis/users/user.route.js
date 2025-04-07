@@ -4,12 +4,11 @@ import express from 'express'
 const route = express.Router()
 
 route.route('/')
-    .get(UserController.getAll)
-    .post(UserController.createUser)
+    .get(UserController.getAllUsers)
+    .post(UserController.postUser)
 
 route.route('/:id')
-    .get(UserController.getDetail)
-    .delete(UserController.deleteUser)
     .put(UserController.updateUser)
-
+    .get(UserController.getDetailUser)
+    .delete(UserController.deleteUser)
 export default route

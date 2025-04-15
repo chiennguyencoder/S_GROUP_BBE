@@ -37,17 +37,6 @@ const UserController = {
     FileService.saveUsersToFile(data)
     return data.users
   }
-//   deleteUser(req, res) {
-//     try {
-//       const data = FileService.getUsersFromFile();
-//       const userID = Number(req.params.id);
-//       data.users = data.users.filter((user) => user.id != userID);
-//       FileService.saveUsersToFile(data);
-//       return res.status(200).json(data.users);
-//     } catch (error) {
-//       return res.status(500).json({ message: error.message });
-//     }
-//   },
 };
 
 export default UserController;

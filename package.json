@@ -27,7 +27,9 @@
     "prettier": "^3.5.3"
   },
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^5.1.0",
-    "express-handlebars": "^8.0.1"
+    "express-handlebars": "^8.0.1",
+    "joi": "^17.13.3"
   }
 }

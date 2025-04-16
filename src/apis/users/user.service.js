@@ -1,53 +1,82 @@
-import FileService  from "../../db/file.js";
+import { getDatabase } from "../../config/db.config.js";
 
-const UserController = {
-  getAll(req, res) {
-    const data = FileService.getUsersFromFile()
-    return data.users
-  },
-
-  getDetailUser(req, res){
-    const data = FileService.getUsersFromFile()
-    const user = data.users.find(u => u.id === Number(req.params.id))
-    return user
-  },
-
-  postUser(req, res){
-    const data = FileService.getUsersFromFile()
-    const user = req.body
-    if (data.users.length === 0)  user.id = 1
-    else user.id = data.users.length + 1
-    data.users.push(user)
-    FileService.saveUsersToFile(data)
-    return data.users
-  },
-  updateUser(req, res){
-    const data = FileService.getUsersFromFile()
-    const user = req.body
-    const index = data.users.findIndex(u => req.params.id == u.id)
-    if (index == -1) return false
-    data.users[index] = { ...data.users[index], ...user };
-    FileService.saveUsersToFile(data);
-    return data.users
-  },
-
-  deleteUser(req, res){
-    const data = FileService.getUsersFromFile()
-    data.users = data.users.filter(u => u.id != Number(req.params.id))
-    FileService.saveUsersToFile(data)
-    return data.users
-  }
-//   deleteUser(req, res) {
-//     try {
-//       const data = FileService.getUsersFromFile();
-//       const userID = Number(req.params.id);
-//       data.users = data.users.filter((user) => user.id != userID);
-//       FileService.saveUsersToFile(data);
-//       return res.status(200).json(data.users);
-//     } catch (error) {
-//       return res.status(500).json({ message: error.message });
-//     }
-//   },
+const getCollection = async () => {
+    try {
+        return await getDatabase().collection("users");
+    } catch (error) {
+        throw error;
+    }
 };
 
-export default UserController;
+const UserService = {
+    async getAllUsers() {
+        try {
+            const collection = await getCollection();
+            const users = await collection.find({}).toArray();
+            return users;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async getUser(id) {
+        try {
+            const collection = await getCollection();
+            const user = await collection.findOne({ _id: Number(id) });
+            if (!user) throw new Error('User not found')
+            return user;
+        } catch (error) {
+            throw new Error(`Failed to get user: ${error.message}`);
+        }
+    },
+
+    async updateUser(id, data) {
+        try {
+            const collection = await getCollection();
+            const query = { _id: Number(id) };
+            const update = {
+                $set: {
+                    ...data
+                }
+            };
+            await collection.updateOne(query, update);
+            const updatedUser = await collection.findOne(query);
+            return updatedUser;
+        } catch (error) {
+            throw new Error(`Failed to update user: ${error.message}`);
+        }
+    },
+
+    async postUser(data){
+        try {
+            const users = await this.getAllUsers();
+            const _id = users.length + 1;
+            const collection = await getCollection();
+            const user = await collection.insertOne({
+                _id : _id,
+                ...data
+            })
+            const createdUser = await collection.findOne({_id})
+            return createdUser;
+        }
+        catch(error){
+            throw new Error(`Failed to create user: ${error.message}`)
+        }
+    },
+
+    async deleteUser(id){
+        try {
+            const collection = await getCollection()
+            const res = await collection.deleteOne({_id : Number(id)})
+            if (res.deletedCount === 1)
+                return "Successfully deleted user"
+            else
+                throw new Error("User not found")
+        }
+        catch(err){
+            throw err
+        }
+    }
+};
+
+export default UserService;

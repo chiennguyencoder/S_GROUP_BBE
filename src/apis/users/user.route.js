@@ -1,14 +1,16 @@
-import UserController  from "./user.controller.js";
+import validateMiddleware from '../../middleware/validate.middleware.js'
+
+import UserController from './user.controller.js'
 import express from 'express'
 
 const route = express.Router()
 
 route.route('/')
     .get(UserController.getAllUsers)
-    .post(UserController.postUser)
+    .post(validateMiddleware.validateUser ,UserController.postUser)
 
 route.route('/:id')
-    .put(UserController.updateUser)
-    .get(UserController.getDetailUser)
-    .delete(UserController.deleteUser)
+    .get(validateMiddleware.validateId,UserController.getUser)
+    .put(validateMiddleware.validateId,validateMiddleware.validateUser ,UserController.updateUser)
+    .delete(validateMiddleware.validateId,UserController.deleteUser)
 export default route

@@ -9,7 +9,10 @@ const errorHandler = (error, req, res, next) => {
         stack: error.stack
     }
 
-    return res.status(error.statusCode).json({error : error.message});
+    return res.status(error.statusCode).json({
+        success : false,
+        error : error.message
+    });
 }
 
 export default errorHandler

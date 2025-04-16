@@ -15,12 +15,17 @@
 
 // export default route
 
-
+import UserController from './user.controller.js'
 import express from 'express'
 
 const route = express.Router()
 
 route.route('/')
-    .get()
+    .get(UserController.getAllUsers)
+    .post(UserController.postUser)
 
+route.route('/:id')
+    .get(UserController.getUser)
+    .put(UserController.updateUser)
+    .delete(UserController.deleteUser)
 export default route

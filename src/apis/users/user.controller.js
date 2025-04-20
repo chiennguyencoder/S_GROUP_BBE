@@ -10,7 +10,7 @@ const UserController = {
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "initialized server error"
             next(err)
         }
@@ -26,7 +26,7 @@ const UserController = {
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }
@@ -40,7 +40,7 @@ const UserController = {
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }
@@ -54,7 +54,7 @@ const UserController = {
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }
@@ -68,7 +68,7 @@ const UserController = {
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }

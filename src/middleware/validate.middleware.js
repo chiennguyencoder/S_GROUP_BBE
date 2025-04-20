@@ -3,12 +3,12 @@ import Joi from 'joi'
 
 const schemaUser = Joi.object({
     name : Joi.string().min(3).max(30).required(),
+    age : Joi.number().integer().min(0).max(120).required(),
     email : Joi.string().email().required(),
     password : Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-    age : Joi.number().integer().min(0).max(120).required(),
 })
 const schemaId = Joi.object({
-    id : Joi.number().integer().min(1).required()
+    id : Joi.string()
 })
 
 const validateMiddleware = {
@@ -39,7 +39,56 @@ const validateMiddleware = {
             error.message = error.message || "Internal server error"
             next(error)
         }
+    },
+    checkDuplicateEmail: async (req, res, next) => {
+        try {
+            const { email } = req.body;
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                throw new Error("Email is already in use");
+            }
+            next();
+        } catch (error) {
+            error.statusCode = 400;
+            error.message = error.message || "Bad Request";
+            next(error);
+        }
     }
 }
 
 export default validateMiddleware
+
+// Hello
+
+
+
+
+
+
+
+
+
+
+/*
+
+    {
+        _id : ObjectId,
+        title : string,
+        auther : string,
+        createdAt : Date,
+        status : string,
+        options: [
+            option : string,
+            ....
+        ],
+        voted: {
+            }
+                user_id: ObjectId
+                votedAt: Date
+                selected: [option_id]
+            }
+                ...
+        }
+    }
+
+*/

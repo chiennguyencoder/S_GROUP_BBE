@@ -1,14 +1,21 @@
 
 import Joi from 'joi'
+import "../apis/users/user.model.js"
+import { getDatabase } from "../config/db.config.js";
+
 
 const schemaUser = Joi.object({
     name : Joi.string().min(3).max(30).required(),
-    age : Joi.number().integer().min(0).max(120).required(),
+    age : Joi.number().integer().min(0).max(120),
     email : Joi.string().email().required(),
     password : Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+    phone : Joi.string().min(10).max(12),
+    address : Joi.string()
 })
-const schemaId = Joi.object({
-    id : Joi.string()
+
+const schemaLogin = Joi.object({
+    password : Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+    email : Joi.string().email().required()
 })
 
 const validateMiddleware = {
@@ -18,7 +25,14 @@ const validateMiddleware = {
             if (error){
                 throw new Error(error.details[0].message)
             }
-            next()
+
+            // Check duplication email
+            const { email } = req.body;
+            const existingUser = await getDatabase().collection('users').findOne({email})
+            if (existingUser) {
+                throw new Error("Email is already in use");
+            }
+            next();
         }
         catch(error){
             error.statusCode = 500
@@ -40,55 +54,18 @@ const validateMiddleware = {
             next(error)
         }
     },
-    checkDuplicateEmail: async (req, res, next) => {
+    validateLogin : async(req, res, next) => {
         try {
-            const { email } = req.body;
-            const existingUser = await User.findOne({ email });
-            if (existingUser) {
-                throw new Error("Email is already in use");
+            const {error} = schemaLogin.validate(req.body)
+            if (error){
+                throw new Error(error.details[0].message)
             }
-            next();
-        } catch (error) {
-            error.statusCode = 400;
-            error.message = error.message || "Bad Request";
-            next(error);
+            next()
+        }
+        catch(err){
+            next(err)
         }
     }
 }
 
 export default validateMiddleware
-
-// Hello
-
-
-
-
-
-
-
-
-
-
-/*
-
-    {
-        _id : ObjectId,
-        title : string,
-        auther : string,
-        createdAt : Date,
-        status : string,
-        options: [
-            option : string,
-            ....
-        ],
-        voted: {
-            }
-                user_id: ObjectId
-                votedAt: Date
-                selected: [option_id]
-            }
-                ...
-        }
-    }
-
-*/

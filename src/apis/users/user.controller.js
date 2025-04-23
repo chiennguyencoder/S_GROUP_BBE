@@ -5,7 +5,7 @@ const UserController = {
         try {
             const users = await UserService.getAllUsers();
             return res.status(200).json({
-                success : true,
+                "success" : "success",
                 users : users
             })
         }
@@ -21,7 +21,7 @@ const UserController = {
             const id = req.params.id;
             const user = await UserService.updateUser(id, data)
             return res.status(200).json({
-                success : true,
+                status : "success",
                 user : user
             })
         }
@@ -33,9 +33,10 @@ const UserController = {
     },
     async getUser(req, res, next){
         try {
-            const user = await UserService.getUser(req.params.id)
+            const id = req.params.id
+            const user = await UserService.getUser(id)
             return res.status(200).json({
-                success : true,
+                status : "success",
                 user : user
             })
         }
@@ -49,7 +50,7 @@ const UserController = {
         try {
             const user = await UserService.postUser(req.body);
             return res.status(200).json({
-                success : true,
+                status : success,
                 user : user
             })
         }
@@ -63,7 +64,7 @@ const UserController = {
         try {
             const result = await UserService.deleteUser(req.params.id)
             return res.status(200).json({
-                success : true,
+                status : "success",
                 message : result
             })
         }

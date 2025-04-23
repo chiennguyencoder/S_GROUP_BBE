@@ -1,11 +1,14 @@
+import { ObjectId } from "mongodb";
 import { getDatabase } from "../../config/db.config.js";
-import UserModel from "./user.model.js"
+import UserModel from "../users/user.model.js"
 
 
 const UserService = {
     async getAllUsers() {
         try {
-            return await UserModel.getAllUser()
+            const users = await UserModel.getAllUser()
+            const safeUsers = users.map(({password, ...rest}) => rest)
+            return safeUsers
         } catch (error) {
             throw new Error(`Failed to get all user: ${error.message}`);
         }
@@ -13,9 +16,11 @@ const UserService = {
 
     async getUser(id) {
         try {
-            const user = await UserModel.getUser(id)
+            console.log(id)
+            const user = await UserModel.getUser({_id : new ObjectId(id)})
             if (!user) throw new Error('User not found')
-            return user;
+            const {password, ...safeUser} = user
+            return safeUser;
         } catch (error) {
             throw new Error(`Failed to get user: ${error.message}`);
         }
@@ -32,7 +37,7 @@ const UserService = {
 
     async postUser(data){
         try {
-            const createdUser =await UserModel.postUser(data)
+            const createdUser = await UserModel.postUser(data)
             return createdUser;
         }
         catch(error){

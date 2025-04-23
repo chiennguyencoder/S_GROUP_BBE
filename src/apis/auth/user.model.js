@@ -22,6 +22,8 @@ const UserModel = {
         const user = await collection.findOne({...data})
         return user
     },
+    
+
     async updateUser(id,data){
         const collection = await getCollection()
         const query = {_id : ObjectId(id)}

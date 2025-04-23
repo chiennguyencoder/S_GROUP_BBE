@@ -10,8 +10,9 @@ const errorHandler = (error, req, res, next) => {
     }
 
     return res.status(error.statusCode).json({
-        success : false,
-        error : error.message
+        status : "error",
+        error : error.message,
+        // stack : error.stack
     });
 }
 

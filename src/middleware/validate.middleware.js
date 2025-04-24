@@ -1,7 +1,5 @@
 
 import Joi from 'joi'
-import "../apis/users/user.model.js"
-import { getDatabase } from "../config/db.config.js";
 
 
 const schemaUser = Joi.object({
@@ -24,13 +22,6 @@ const validateMiddleware = {
             const {error} = schemaUser.validate(req.body)
             if (error){
                 throw new Error(error.details[0].message)
-            }
-
-            // Check duplication email
-            const { email } = req.body;
-            const existingUser = await getDatabase().collection('users').findOne({email})
-            if (existingUser) {
-                throw new Error("Email is already in use");
             }
             next();
         }

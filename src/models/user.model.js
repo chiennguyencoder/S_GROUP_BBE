@@ -1,6 +1,6 @@
 
 import { ObjectId } from "mongodb";
-import { getDatabase } from "../../config/db.config.js";
+import { getDatabase } from "../config/db.config.js"
 
 
 const getCollection = async () => {
@@ -22,8 +22,6 @@ const UserModel = {
         const user = await collection.findOne({...data})
         return user
     },
-    
-
     async updateUser(id,data){
         const collection = await getCollection()
         const query = {_id : ObjectId(id)}

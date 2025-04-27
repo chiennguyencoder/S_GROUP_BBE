@@ -1,0 +1,38 @@
+{
+  "name": "base_backend",
+  "version": "1.0.0",
+  "description": "I learn basic backend",
+  "license": "ISC",
+  "author": "chiennguyencoder",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "babel ./src --out-dir ./build",
+    "start": "nodemon --exec babel-node src/index.js",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.27.0",
+    "@babel/core": "^7.26.10",
+    "@babel/node": "^7.26.0",
+    "@babel/preset-env": "^7.26.9",
+    "@babel/runtime": "^7.27.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.5",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "6.15"
+  }
+}

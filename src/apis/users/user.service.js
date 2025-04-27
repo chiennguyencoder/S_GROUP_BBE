@@ -1,30 +1,26 @@
+import { ObjectId } from "mongodb";
 import { getDatabase } from "../../config/db.config.js";
+import UserModel from "../users/user.model.js"
 
-const getCollection = async () => {
-    try {
-        return await getDatabase().collection("users");
-    } catch (error) {
-        throw error;
-    }
-};
 
 const UserService = {
     async getAllUsers() {
         try {
-            const collection = await getCollection();
-            const users = await collection.find({}).toArray();
-            return users;
+            const users = await UserModel.getAllUser()
+            const safeUsers = users.map(({password, ...rest}) => rest)
+            return safeUsers
         } catch (error) {
-            throw error;
+            throw new Error(`Failed to get all user: ${error.message}`);
         }
     },
 
     async getUser(id) {
         try {
-            const collection = await getCollection();
-            const user = await collection.findOne({ _id: Number(id) });
+            console.log(id)
+            const user = await UserModel.getUser({_id : new ObjectId(id)})
             if (!user) throw new Error('User not found')
-            return user;
+            const {password, ...safeUser} = user
+            return safeUser;
         } catch (error) {
             throw new Error(`Failed to get user: ${error.message}`);
         }
@@ -32,15 +28,7 @@ const UserService = {
 
     async updateUser(id, data) {
         try {
-            const collection = await getCollection();
-            const query = { _id: Number(id) };
-            const update = {
-                $set: {
-                    ...data
-                }
-            };
-            await collection.updateOne(query, update);
-            const updatedUser = await collection.findOne(query);
+            updatedUser = await UserModel.updateUser(id, data)
             return updatedUser;
         } catch (error) {
             throw new Error(`Failed to update user: ${error.message}`);
@@ -49,14 +37,7 @@ const UserService = {
 
     async postUser(data){
         try {
-            const users = await this.getAllUsers();
-            const _id = users.length + 1;
-            const collection = await getCollection();
-            const user = await collection.insertOne({
-                _id : _id,
-                ...data
-            })
-            const createdUser = await collection.findOne({_id})
+            const createdUser = await UserModel.postUser(data)
             return createdUser;
         }
         catch(error){
@@ -66,9 +47,8 @@ const UserService = {
 
     async deleteUser(id){
         try {
-            const collection = await getCollection()
-            const res = await collection.deleteOne({_id : Number(id)})
-            if (res.deletedCount === 1)
+            const result = await UserModel.deleteUser(id)
+            if (result.deletedCount === 1)
                 return "Successfully deleted user"
             else
                 throw new Error("User not found")

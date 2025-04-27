@@ -32,6 +32,7 @@
     "express": "^5.1.0",
     "express-handlebars": "^8.0.1",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "6.15"
   }
 }

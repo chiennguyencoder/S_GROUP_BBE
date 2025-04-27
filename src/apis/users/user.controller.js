@@ -5,12 +5,12 @@ const UserController = {
         try {
             const users = await UserService.getAllUsers();
             return res.status(200).json({
-                success : true,
+                "success" : "success",
                 users : users
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "initialized server error"
             next(err)
         }
@@ -21,26 +21,27 @@ const UserController = {
             const id = req.params.id;
             const user = await UserService.updateUser(id, data)
             return res.status(200).json({
-                success : true,
+                status : "success",
                 user : user
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }
     },
     async getUser(req, res, next){
         try {
-            const user = await UserService.getUser(req.params.id)
+            const id = req.params.id
+            const user = await UserService.getUser(id)
             return res.status(200).json({
-                success : true,
+                status : "success",
                 user : user
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }
@@ -49,12 +50,12 @@ const UserController = {
         try {
             const user = await UserService.postUser(req.body);
             return res.status(200).json({
-                success : true,
+                status : success,
                 user : user
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }
@@ -63,12 +64,12 @@ const UserController = {
         try {
             const result = await UserService.deleteUser(req.params.id)
             return res.status(200).json({
-                success : true,
+                status : "success",
                 message : result
             })
         }
         catch(err){
-            err.statusCode = 500
+            err.statusCode = err.statusCode || 500
             err.message = err.message || "Internal server error"
             next(err)
         }

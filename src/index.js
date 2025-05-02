@@ -24,13 +24,12 @@ const startApp = function(){
 
     // Template engine
     templateEngineConfig(app)
-    app.get('/hello', (req, res, next) => {
+    app.get('/', (req, res, next) => {
         res.render('index.ejs')
     })
 
     // Check error
     app.use(errorHandler)
-
     app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
 }
 
@@ -47,15 +46,3 @@ const run = async () => {
 }
 
 run()
-
-// connectDatabase()
-//     .then(() => {
-//         console.log('Conntected');
-//     })
-//     .then(() => {
-//         startApp();
-//     })
-//     .catch(err => {
-//         console.log(err);
-//         process.exit(1);
-//     })

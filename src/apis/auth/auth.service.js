@@ -9,7 +9,7 @@ const AuthService = {
         try {
             // Check duplication email
             const { email } = data;
-            const existingUser = await getDatabase().collection('users').findOne({email})
+            const existingUser = await UserModel.getUser({email})
             if (existingUser) {
                 throw new Error("Email is already in use");
             }

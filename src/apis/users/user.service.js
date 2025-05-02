@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { getDatabase } from "../../config/db.config.js";
-import UserModel from "../users/user.model.js"
+import UserModel from "../../models/user.model.js"
 
 
 const UserService = {
@@ -16,7 +16,6 @@ const UserService = {
 
     async getUser(id) {
         try {
-            console.log(id)
             const user = await UserModel.getUser({_id : new ObjectId(id)})
             if (!user) throw new Error('User not found')
             const {password, ...safeUser} = user

@@ -1,4 +1,4 @@
-import AuthProvider from "../apis/auth/auth.provider.js"
+import AuthProvider from "../providers/auth.provider.js"
 
 const VerifyMiddleware = {
     // Middleware to check if user is authenticated
@@ -10,13 +10,13 @@ const VerifyMiddleware = {
             }
             const token = header.split(' ')[1];
 
-            req.user = AuthProvider.decodeToken(token);
+            req.user = await AuthProvider.decodeToken(token);
             next()
         }
         catch(err){
             err.statusCode = 401
             err.message = "Unauthorized or token expired"
-            next(err)
+            throw err
         }
     }
 }

@@ -5,8 +5,9 @@ const UserController = {
         try {
             const users = await UserService.getAllUsers();
             return res.status(200).json({
-                "success" : "success",
-                users : users
+                status : "success",
+                total : users.length,
+                data : users
             })
         }
         catch(err){

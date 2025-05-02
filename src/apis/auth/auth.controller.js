@@ -29,9 +29,9 @@ const AutherController = {
             })
         }
         catch(err){
-            error.statusCode = error.statusCode || 500
-            error.message = error.message || "Internal Server Error"
-            next(error)
+            err.statusCode = err.statusCode || 500
+            err.message = err.message || "Internal Server Error"
+            next(err)
         }
     },
 
@@ -42,16 +42,14 @@ const AutherController = {
             const user = await AuthService.getProfile(id)
             return res.status(200).json({
                 status : "success",
-                data : {
-                    ...user
-                }
+                data : { ...user }
 
             })
         }
         catch(err){
-            error.statusCode = error.statusCode || 500
-            error.message = error.message || "Internal Server Error"
-            next(error)
+            err.statusCode = err.statusCode || 500
+            err.message = err.message || "Internal server error"
+            next(err)
         }
     }
 }

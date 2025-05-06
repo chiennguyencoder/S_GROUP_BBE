@@ -24,7 +24,7 @@ const UserModel = {
     },
     async updateUser(id,data){
         const collection = await getCollection()
-        const query = {_id : ObjectId(id)}
+        const query = {_id : new ObjectId(id)}
         const update = {
             $set : {
                 ...data
@@ -46,7 +46,7 @@ const UserModel = {
         const collection = await getCollection()
         const result = await collection.deleteOne({_id : new ObjectId(id)})
         return result
-    }
+    },
 }
 
 export default UserModel

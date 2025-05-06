@@ -2,7 +2,6 @@ import AuthProvider from "../../providers/auth.provider.js"
 import HashProvider from "../../providers/hash.provider.js"
 import { ObjectId } from "mongodb";
 import UserModel from "../../models/user.model.js"
-import { getDatabase } from "../../config/db.config.js";
 
 const AuthService = {
     async register(data){
@@ -53,6 +52,55 @@ const AuthService = {
         }
         catch(error){
             throw error
+        }
+    },
+
+    async forgotPassword(email) {
+        try {
+            const user = await UserModel.getUser({ email });
+            if (!user) {
+                const error = new Error('User not found');
+                error.statusCode = 404;
+                throw error;
+            }
+
+            const token = Math.floor(1000 + Math.random() * 9000);
+            await UserModel.updateUser(user._id, {
+                token,
+                tokenExpireTime: Date.now() + 10 * 60 * 1000,
+            });
+
+            await AuthProvider.sendEmail({
+                emailFrom: process.env.SMTP_USER,
+                emailTo: user.email,
+                emailSubject: "Use OTP to reset password",
+                emailText: `OTP: ${token}`,
+            });
+
+            return true;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    async resetPassword(otp, email, newPassword) {
+        try {
+            const user = await UserModel.getUser({
+                token: otp,
+                email: email,
+                tokenExpireTime: { "$gt": Date.now() }
+            });
+
+            if (!user) {
+                const error = new Error('Invalid or expired OTP');
+                error.statusCode = 400;
+                throw error;
+            }
+
+            const hashedPassword = await HashProvider.generateHash(newPassword);
+            await UserModel.updateUser(user._id, { password: hashedPassword, token: null, tokenExpireTime: null });
+        } catch (error) {
+            throw error;
         }
     }
 }

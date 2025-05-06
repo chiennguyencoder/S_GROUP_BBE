@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
+import transporter from '../config/email.config.js';
 
 const AuthProvider = {
     async encodeToken (user){
@@ -17,6 +18,15 @@ const AuthProvider = {
 
     async decodeToken(token){
         return jwt.verify(token, process.env.JWT_SECRET);
+    },
+
+    async sendEmail({emailFrom, emailTo, emailSubject, emailText}){
+        const info = await transporter.sendMail({
+            from : emailFrom,
+            to : emailTo,
+            subject : emailSubject,
+            text: emailText
+        })
     }
 }
 

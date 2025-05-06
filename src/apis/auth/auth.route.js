@@ -3,24 +3,34 @@ import AutherController from './auth.controller.js'
 import validateMiddleware from '../../middleware/validate.middleware.js'
 import VerifyMiddleware from '../../middleware/verify.middleware.js'
 
-const authRouter = express.Router()
+const AutherRouter = express.Router()
 
 
-authRouter.route("/register")
+AutherRouter.route("/register")
     .post(  
         validateMiddleware.validateUser, 
         AutherController.register
     )
-authRouter.route("/login")
+AutherRouter.route("/login")
     .post(
         validateMiddleware.validateLogin,
         AutherController.login
     )
 
-authRouter.route("/profile")
+AutherRouter.route("/profile")
     .get(
         VerifyMiddleware.checkAuth,
         AutherController.getProfile
     )
 
-export default authRouter
+AutherRouter.route("/forgot")
+    .post(
+        AutherController.forgotPassword
+    )
+
+AutherRouter.route("/reset")
+    .post(
+        AutherController.resetPassword
+    )
+
+export default AutherRouter

@@ -74,7 +74,7 @@ const AuthService = {
                 emailFrom: process.env.SMTP_USER,
                 emailTo: user.email,
                 emailSubject: "Use OTP to reset password",
-                emailText: `OTP: ${token}`,
+                emailText: token
             });
 
             return true;

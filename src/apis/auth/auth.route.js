@@ -5,7 +5,6 @@ import VerifyMiddleware from '../../middleware/verify.middleware.js'
 
 const AutherRouter = express.Router()
 
-
 AutherRouter.route("/register")
     .post(  
         validateMiddleware.validateUser, 
@@ -25,11 +24,13 @@ AutherRouter.route("/profile")
 
 AutherRouter.route("/forgot")
     .post(
+        validateMiddleware.validateEmail,
         AutherController.forgotPassword
     )
 
 AutherRouter.route("/reset")
     .post(
+        validateMiddleware.schemaResetPassword,
         AutherController.resetPassword
     )
 

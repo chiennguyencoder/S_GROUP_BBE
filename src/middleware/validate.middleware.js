@@ -16,6 +16,16 @@ const schemaLogin = Joi.object({
     email : Joi.string().email().required()
 })
 
+const schemaEmail = Joi.object({
+    email : Joi.string().email().required()
+})
+
+const schemaResetPassword = Joi.object({
+    resetEmail : Joi.string().email().required(),
+    resetNewPassword : Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+    resetOTP : Joi.number().min(1000).max(9999).required()
+})
+
 const validateMiddleware = {
     validateUser : async (req, res, next) => {
         try {
@@ -26,8 +36,6 @@ const validateMiddleware = {
             next();
         }
         catch(error){
-            error.statusCode = 500
-            error.message = error.message || "Internal server error"
             next(error)
         }
     },
@@ -40,14 +48,36 @@ const validateMiddleware = {
             next()
         }
         catch(error){
-            error.statusCode = 500
-            error.message = error.message || "Internal server error"
             next(error)
         }
     },
     validateLogin : async(req, res, next) => {
         try {
             const {error} = schemaLogin.validate(req.body)
+            if (error){
+                throw new Error(error.details[0].message)
+            }
+            next()
+        }
+        catch(err){
+            next(err)
+        }
+    },
+    validateEmail : async(req, res, next) => {
+        try {
+            const {error} = schemaEmail.validate(req.body)
+            if (error){
+                throw new Error(error.details[0].message)
+            }
+            next()
+        }
+        catch(err){
+            next(err)
+        }
+    },
+    schemaResetPassword : async(req, res, next) => {
+        try {
+            const {error} = schemaResetPassword.validate(req.body)
             if (error){
                 throw new Error(error.details[0].message)
             }

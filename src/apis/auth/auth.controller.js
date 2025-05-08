@@ -1,5 +1,5 @@
-import UserModel from "../../models/user.model.js";
 import AuthService from "./auth.service.js"
+import ErrorProvider from "../../providers/error.provider.js";
 
 const AutherController = {
     // Function to handle user registration
@@ -13,9 +13,7 @@ const AutherController = {
             })
         }
         catch(error){
-            error.statusCode = error.statusCode || 500
-            error.message = error.message || "Internal Server Error"
-            next(error)
+            next(ErrorProvider.formatError(error))
         }
     },
 
@@ -29,10 +27,8 @@ const AutherController = {
                 token : token
             })
         }
-        catch(err){
-            err.statusCode = err.statusCode || 500
-            err.message = err.message || "Internal Server Error"
-            next(err)
+        catch(error){
+            next(ErrorProvider.formatError(error))
         }
     },
 
@@ -40,17 +36,15 @@ const AutherController = {
     async getProfile(req, res, next){
         try {
             const id = req.user.id;
+            console.log(req);
             const user = await AuthService.getProfile(id)
             return res.status(200).json({
                 status : "success",
                 data : { ...user }
-
             })
         }
-        catch(err){
-            err.statusCode = err.statusCode || 500
-            err.message = err.message || "Internal server error"
-            next(err)
+        catch(error){
+            next(ErrorProvider.formatError(error))
         }
     },
 
@@ -65,10 +59,8 @@ const AutherController = {
             })
         }
 
-        catch(err){
-            err.statusCode = err.statusCode || 500
-            err.message = err.message || "Internal server error"
-            next(err)
+        catch(error){
+            next(ErrorProvider.formatError(error))
         }
     },
 

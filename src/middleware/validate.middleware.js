@@ -26,6 +26,13 @@ const schemaResetPassword = Joi.object({
     resetOTP : Joi.number().min(1000).max(9999).required()
 })
 
+const schemaPolls = Joi.object({
+    question : Joi.string().required(),
+    description : Joi.string(),
+    options : Joi.array().items(Joi.object().required()).required(),
+    endTime : Joi.date()
+})
+
 const validateMiddleware = {
     validateUser : async (req, res, next) => {
         try {
@@ -78,6 +85,19 @@ const validateMiddleware = {
     schemaResetPassword : async(req, res, next) => {
         try {
             const {error} = schemaResetPassword.validate(req.body)
+            if (error){
+                throw new Error(error.details[0].message)
+            }
+            next()
+        }
+        catch(err){
+            next(err)
+        }
+    },
+
+    validateCreatePoll : async(req, res, next) => {
+        try {
+            const {error} = schemaPolls.validate(req.body)
             if (error){
                 throw new Error(error.details[0].message)
             }

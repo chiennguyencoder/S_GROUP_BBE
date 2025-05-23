@@ -1,5 +1,6 @@
 
 import Joi from 'joi'
+import { ObjectId } from 'mongodb'
 
 
 const schemaUser = Joi.object({
@@ -30,7 +31,7 @@ const schemaPolls = Joi.object({
     question : Joi.string().required(),
     description : Joi.string(),
     options : Joi.array().items(Joi.object().required()).required(),
-    endTime : Joi.date()
+    expiresAt : Joi.date().iso()
 })
 
 const validateMiddleware = {
@@ -82,7 +83,7 @@ const validateMiddleware = {
             next(err)
         }
     },
-    schemaResetPassword : async(req, res, next) => {
+    validateResetPassword : async(req, res, next) => {
         try {
             const {error} = schemaResetPassword.validate(req.body)
             if (error){
@@ -106,7 +107,26 @@ const validateMiddleware = {
         catch(err){
             next(err)
         }
+    },
+
+    validateCheckID : async(req, res, next) => {
+        const poll_id = req.params.id
+        const option_id = req.body.optionID
+        if (!ObjectId.isValid(poll_id)){
+            return res.status(400).json({
+                status: "error",
+                message: "Invalid poll ID"
+            })
+        }
+
+        if (!ObjectId.isValid(option_id)){
+            return res.status(400).json({
+                status: "error",
+                message: "Invalid option ID"
+            })
+        }
     }
+
 }
 
 export default validateMiddleware

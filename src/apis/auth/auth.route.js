@@ -30,7 +30,7 @@ AutherRouter.route("/forgot")
 
 AutherRouter.route("/reset")
     .post(
-        validateMiddleware.schemaResetPassword,
+        validateMiddleware.validateResetPassword,
         AutherController.resetPassword
     )
 

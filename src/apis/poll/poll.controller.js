@@ -19,7 +19,10 @@ const PollController = {
             const polls = await PollServices.getAll();
             return res.status(200).json({
                 status : "success",
-                data : polls
+                data : {
+                    polls,
+                    total : polls.length
+                },
             })
         }
         catch(error){
@@ -33,7 +36,8 @@ const PollController = {
             const polls = await PollServices.getOne(id)
             return res.status(200).json({
                 status : "success",
-                data : polls
+                data : polls,
+                total : polls.size
             })
         }
         catch(error){
@@ -89,6 +93,55 @@ const PollController = {
         catch(error){
             next(ErrorProvider.formatError(error))
 
+        }
+    },
+
+    async unvote(req, res, next){
+        try {
+            const { body, user } = req
+            const pollID = req.params.id
+            const optionID = body.optionID
+
+            await PollServices.unvote(pollID, optionID, user)
+            return res.status(200).json({
+                status: "success",
+                message: "Your vote has been successfully removed.",
+            });
+        }
+        catch(error){
+            next(ErrorProvider.formatError(error))
+        }
+    },
+
+    async lock(req, res, next){
+        try {
+            const id = req.params.id
+            await PollServices.lock(id, req.user)
+
+            res.status(200).json({
+                status: "success",
+                message: "Poll has been successfully locked."
+            });
+        }
+
+        catch(error){
+            next(ErrorProvider.formatError(error))
+        }
+    },
+
+    async unlock(req, res, next){
+        try {
+            const id = req.params.id
+            await PollServices.unlock(id, req.user)
+
+            res.status(200).json({
+                status: "success",
+                message: "Poll has been successfully unlocked."
+            });
+        }
+
+        catch(error){
+            next(ErrorProvider.formatError(error))
         }
     }
 

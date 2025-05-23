@@ -13,7 +13,7 @@ const PollModel = {
     },
 
     async getOne(query){
-        return await getDatabase().collection('polls').find({...query}).toArray()
+        return await getDatabase().collection('polls').findOne({...query})
     },
 
     async delete(query){
@@ -34,8 +34,12 @@ const PollModel = {
         return await getDatabase().collection("votes").insertOne({...data})
     },
 
-    async findVote(data){
-        return await getDatabase().collection("votes").findOne({...data})
+    async findVote(query){
+        return await getDatabase().collection("votes").find({...query}).toArray()
+    },
+
+    async unvote(query){
+        return await getDatabase().collection("votes").deleteOne({...query})
     }
 }
 
